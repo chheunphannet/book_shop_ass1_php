@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soft Mesh Background</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back_ios" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back_ios,book_2,chevron_left" />
     <link rel="stylesheet" href="./home.css">
 </head>
 <body>
@@ -15,8 +15,12 @@
     <div class="background-blob blob-4"></div>
 
     <div class="glass-container">
-       <aside>
-            <img src="" alt="" class="aside-logo">
+       <aside class="sidebar">
+            <div class="container-brandlogo">
+                <span class="material-symbols-outlined icon-lg">book_2</span>
+                <span class="logo-name">Bookrak</span>
+            </div>
+            
             <div class="header-aside">
                 <h3 class="header-aside-content"></h3>
             </div>
@@ -26,12 +30,11 @@
                     <p class="category-text">hello</p>
                 </li>
             </ul>
-            <div class="open-aside">
-                <div>
-                    <span class="material-symbols-outlined">arrow_back_ios</span>
-                </div>
-            </div>
        </aside>
+
+        <div class="open-aside">
+            <span class="material-symbols-outlined">chevron_left</span>
+       </div>  
        <div class="main-content">
             <nav>
                 <img src="" alt="" class="mian-logo">
@@ -50,5 +53,6 @@
        </div>
     </div>
 
+    <script src="./script.js"></script>
 </body>
 </html>
