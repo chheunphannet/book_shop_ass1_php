@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Soft Mesh Background</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=arrow_back_ios,book_2,chevron_left" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
     <link rel="stylesheet" href="./home.css">
 </head>
 <body>
@@ -36,17 +36,24 @@
             <span class="material-symbols-outlined">chevron_left</span>
        </div>  
        <div class="main-content">
-            <nav>
-                <img src="" alt="" class="mian-logo">
-                <div class="search-container">
-                    <img src="" alt="" class="search-logo">
-                    <input type="text" class="search-input">
-                </div>
+            <nav class="nav-container">
+                <div class="container-brandlogo">
+                <span class="material-symbols-outlined icon-lg">book_2</span>
+                <span class="logo-name">Bookrak</span>
+            </div>
+                <form class="search-container" action="" method="post">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="text" name="search" class="search-input">
+                </form>
                 <ul class="list-container"  type="none">
                     <li>Shop</li>
                     <li>Blog</li>
                     <li>About Us</li>
-                    <li>Basket <span><img src="" alt="" class="basket-logo"></span></li>
+                    <li class="basket">
+                        <span>Basket</span> 
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        <span class="basket-count">0</span>
+                    </li>
                 </ul>
 
             </nav>

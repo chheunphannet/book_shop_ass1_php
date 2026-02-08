@@ -9,6 +9,8 @@
 
 :root {
   --header-color: #313871;
+  --secondary-color: #31387156;
+  --third-color: #ff717c;
 }
 
 body {
@@ -186,8 +188,83 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  /* width: 100%; */
   color: var(--header-color);
   font-size: 30px;
   font-weight: bold;
+}
+
+.list-container {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--header-color);
+  /* font-size: 30px; */
+  /* font-weight: bold; */
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.basket {
+  display: flex;
+  align-items: center;
+}
+
+.search-container {
+  border: 2px solid var(--header-color);
+  border-radius: 10px;
+  padding: 2px 10px;
+  transition: 0.4s ease;
+}
+
+.search-input {
+  outline: none;
+  background: none;
+  border: none;
+  color: var(--header-color);
+  font-weight: 600;
+  font-size: 15px;
+  transition: 0.4s ease;
+}
+
+.search-container:focus-within {
+  background: var(--secondary-color);
+}
+
+.basket-count {
+  position: relative;
+  top: -10px;
+  left: -10px;
+  background: var(--third-color);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.list-container li {
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    transform 0.4s ease;
+}
+
+.list-container li:hover {
+  color: var(--third-color);
+  transform: scale(1.1);
 }
