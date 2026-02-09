@@ -1,3 +1,25 @@
+<?php
+    $category = [
+        "Fiction",
+        "Non-Fiction",
+        "Science Fiction",
+        "Fantasy",
+        "Mystery",
+        "Biography",
+        "History",
+        "Children's Books",
+        "Romance",
+        "Thriller",
+        "Horror",
+        "Poetry",
+        "Self-Help",
+        "Graphic Novels",
+        "Young Adult",
+        "Cookbooks",
+        "Travel",
+        "Business",
+    ];
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,37 +37,46 @@
     <div class="background-blob blob-4"></div>
 
     <div class="glass-container">
-       <aside class="sidebar">
+       <aside class="sidebar collapsed">
             <div class="container-brandlogo">
                 <span class="material-symbols-outlined icon-lg">book_2</span>
                 <span class="logo-name">Bookrak</span>
             </div>
             
             <div class="header-aside">
-                <h3 class="header-aside-content"></h3>
+                <span class="material-symbols-outlined category-icon">category</span>
+                <h3 class="header-aside-content">Book category</h3>
             </div>
-            <ul class="list-container" type="none">
-                <li class="catagory-list">
-                    <img src="" alt="">
-                    <p class="category-text">hello</p>
-                </li>
+
+            <ul class="list-container-slide" type="none">
+                <?php 
+                $count = 0;
+                foreach ($category as $cat):
+                 if ($count++ >= 12) break; ?>
+                    <li class="catagory-list">
+                        <span class="material-symbols-outlined list-icon">keyboard_double_arrow_right</span>
+                        <p class="category-text"><?php echo $cat; ?></p>
+                    </li>
+                <?php endforeach; ?>
             </ul>
+
        </aside>
 
         <div class="open-aside">
             <span class="material-symbols-outlined">chevron_left</span>
        </div>  
+
        <div class="main-content">
             <nav class="nav-container">
-                <div class="container-brandlogo">
-                <span class="material-symbols-outlined icon-lg">book_2</span>
-                <span class="logo-name">Bookrak</span>
-            </div>
+                <div class="container-brandlogo-main">
+                    <span class="material-symbols-outlined icon-lg">book_2</span>
+                    <span class="logo-name">Bookrak</span>
+                </div>
                 <form class="search-container" action="" method="post">
                     <span class="material-symbols-outlined">search</span>
                     <input type="text" name="search" class="search-input">
                 </form>
-                <ul class="list-container"  type="none">
+                <ul class="list-container-main"  type="none">
                     <li>Shop</li>
                     <li>Blog</li>
                     <li>About Us</li>
