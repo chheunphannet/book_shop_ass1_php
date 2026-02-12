@@ -1,27 +1,8 @@
 <?php
-    $category = [
-        "Fiction",
-        "Non-Fiction",
-        "Science Fiction",
-        "Fantasy",
-        "Mystery",
-        "Biography",
-        "History",
-        "Children's Books",
-        "Romance",
-        "Thriller",
-        "Horror",
-        "Poetry",
-        "Self-Help",
-        "Graphic Novels",
-        "Young Adult",
-        "Cookbooks",
-        "Travel",
-        "Business",
-    ];
+    require __DIR__ . '/service.php';
 
-    $limit = 12;
-    $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+    $service = new DatabaseService();
+    $category = $service->getCategory();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -53,14 +34,15 @@
 
             <ul class="list-container-slide" type="none">
                 <?php 
-                $count = 0;
                 foreach ($category as $cat):
-                 if ($count++ >= 12) break; ?>
+                ?>
                     <li class="catagory-list">
                         <span class="material-symbols-outlined list-icon">keyboard_double_arrow_right</span>
-                        <p class="category-text"><?php echo $cat; ?></p>
+                        <p class="category-text"><?php echo $cat['name']; ?></p>
                     </li>
-                <?php endforeach; ?>
+                <?php 
+                    endforeach; 
+                ?>
             </ul>
             <div class="view-more-container">
                 <span class="material-symbols-outlined more-icon">more_horiz</span>
