@@ -340,6 +340,7 @@ body {
   gap: 10px;
 }
 
+.view-more-container,
 .catagory-list {
   font-size: 18px;
   font-weight: normal;
@@ -355,6 +356,7 @@ body {
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 30px;
+  cursor: pointer;
 
   padding: 5px 10px;
   margin: 0;
@@ -364,11 +366,22 @@ body {
     box-shadow 0.2s ease;
 }
 
+.catagory-list:last-child {
+  margin-bottom: 10px;
+}
+.view-more-container:hover,
 .catagory-list:hover {
   transform: scale(1.08);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 }
+
 .category-text,
 .list-icon {
   font-size: 15px;
+}
+
+.view-more-content,
+.more-icon {
+  font-size: 15px;
+  color: var(--header-color);
 }

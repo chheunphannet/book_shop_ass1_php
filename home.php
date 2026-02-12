@@ -19,6 +19,9 @@
         "Travel",
         "Business",
     ];
+
+    $limit = 12;
+    $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,6 +62,11 @@
                     </li>
                 <?php endforeach; ?>
             </ul>
+            <div class="view-more-container">
+                <span class="material-symbols-outlined more-icon">more_horiz</span>
+                <p class="view-more-content">View more</p>
+            </div>
+            
 
        </aside>
 
