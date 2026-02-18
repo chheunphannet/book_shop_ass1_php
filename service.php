@@ -33,6 +33,27 @@ class DatabaseService
         return $this->db;
     }
 
+    public function searchBooksByTitle(string $title): array{
+        $search = "%" . $title . "%";
+        $stmt = $this->db->prepare('SELECT b.*, c.name FROM books AS b
+            INNER JOIN category AS c ON b.category_id = c.category_id
+            WHERE b.title LIKE ? ORDER BY b.title ASC');
+        $stmt->bind_param('s', $search);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $books = [];
+        while ($row = $result->fetch_assoc()) {
+            if(!empty($row['book_cover'])) {
+                $row['book_cover_base64'] = 'data:image/jpeg;base64,' . base64_encode($row['book_cover']);
+            } else {
+               $row['book_cover_base64'] = './placeholder-image-vertical.png'; 
+            }
+            $books[] = $row;
+        }
+        return $books;
+    }
+
     public  function getBooks(int $limit = 50, int $offset = 0): array {
         $stmt = $this->db->prepare('SELECT books.*, category.name FROM books INNER JOIN category 
             ON books.category_id = category.category_id 

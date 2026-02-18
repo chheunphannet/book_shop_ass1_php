@@ -87,18 +87,16 @@
                     <span class="material-symbols-outlined icon-lg">book_2</span>
                     <span class="logo-name">Bookrak</span>
                 </div>
-                <form class="search-container" action="" method="post">
+                <form class="search-container" action="" method="get">
                     <span class="material-symbols-outlined">search</span>
                     <input type="text" name="search" class="search-input">
-                    <button id="search-btn" type="submit">
+                    <button id="search-btn" type="submit" onclick="searchTitle()">
                         <span class="material-symbols-outlined">search</span>
                     </button>  
                 </form>
                     
-                <ul class="list-container-main"  type="none">
-                    <li>Shop</li>
-                    <li>Blog</li>
-                    <li>About Us</li>
+                <ul class="list-container-main" type="none">
+                    <li>Admin Dashboard</li>
                     <li class="basket">
                         <span>Basket</span> 
                         <span class="material-symbols-outlined">shopping_cart</span>
@@ -126,7 +124,7 @@
                     <?php endif; ?>
                     
             </div>
-            <h3>You may like</h3>
+            <h3 id="you-may-like">You may like</h3>
             <div class="book-cover-grid">
                 <?php 
                     $book_in_box = $service->getRandomBook(5);
@@ -144,7 +142,7 @@
                     endif; 
                     ?>
             </div>
-            <h3>All books</h3>
+            <h3 id="all-books">All books</h3>
             <div class="book-card-container">
                 <div id="book-cards">
                     <?php
