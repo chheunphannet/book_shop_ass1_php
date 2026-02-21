@@ -1,17 +1,19 @@
-<?php 
-  require __DIR__ . '/service.php';
+<?php
+  require __DIR__ ."/service.php";
+
   $service = new DatabaseService();
 
-  $search_keyword = $_GET['search'] ?? '';
+  $category_id = (int)($_GET["category_id"] ?? 0);
+
   $books = [];
-  if ($search_keyword != '') {
-    $books = $service->searchBooksByTitle($search_keyword);
+  if($category_id != 0) {
+    $books = $service->getBooksByCategoryId($category_id);
   }
 
-  if(!empty($books)) {
+  if (!empty($books)) {
     foreach ($books as $book) {
-      ?>
-      <div class="book-cards">
+        ?>
+        <div class="book-cards">
             <div class="book-cover-card" style="background-image: url('<?= $book['book_cover_base64'] ?>')"></div>
             <div class="book-context">
                 <div>
@@ -30,9 +32,10 @@
                     <button>Add To Card</button>
                 </div>   
             </div>
-      </div>
-      <?php
+        </div>
+        <?php
     }
-}else {
+} else {
     echo "not_found";
 }
+  

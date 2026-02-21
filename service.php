@@ -33,11 +33,36 @@ class DatabaseService
         return $this->db;
     }
 
+    public function getBooksByCategoryId(int $categoryId): array{
+        $stmt = $this->db->prepare('SELECT books.*, category.name FROM books 
+            INNER JOIN category ON books.category_id = category.category_id
+            WHERE category.category_id = ?
+            AND books.stock_quantity >= 1
+            AND books.is_active = TRUE
+            ORDER BY books.title ASC');
+        $stmt->bind_param('i', $categoryId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $books = [];
+        while ($row = $result->fetch_assoc()) {
+            if(!empty($row['book_cover'])) {
+                $row['book_cover_base64'] = 'data:image/jpeg;base64,' . base64_encode($row['book_cover']);
+            } else {
+               $row['book_cover_base64'] = './placeholder-image-vertical.png'; 
+            }
+            $books[] = $row;
+        }
+        return $books;
+    }
+
     public function searchBooksByTitle(string $title): array{
         $search = "%" . $title . "%";
         $stmt = $this->db->prepare('SELECT b.*, c.name FROM books AS b
             INNER JOIN category AS c ON b.category_id = c.category_id
-            WHERE b.title LIKE ? ORDER BY b.title ASC');
+            WHERE b.title LIKE ?
+            AND b.stock_quantity >= 1
+            AND b.is_active = TRUE
+            ORDER BY b.title ASC');
         $stmt->bind_param('s', $search);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -57,6 +82,8 @@ class DatabaseService
     public  function getBooks(int $limit = 50, int $offset = 0): array {
         $stmt = $this->db->prepare('SELECT books.*, category.name FROM books INNER JOIN category 
             ON books.category_id = category.category_id 
+            WHERE books.stock_quantity >= 1
+            AND books.is_active = TRUE
             ORDER BY books.title ASC LIMIT ?, ?');
 
         $stmt->bind_param('ii', $offset,$limit);
@@ -77,7 +104,7 @@ class DatabaseService
     }
 
     public function getRandomBook(int $limit = 1) {
-        $stmt = $this->db->prepare('SELECT books.*, category.name FROM books INNER JOIN category ON books.category_id = category.category_id ORDER BY RAND() LIMIT ?;');
+        $stmt = $this->db->prepare('SELECT books.*, category.name FROM books INNER JOIN category ON books.category_id = category.category_id WHERE books.stock_quantity >= 1 AND books.is_active = TRUE ORDER BY RAND() LIMIT ?;');
         $stmt->bind_param("i",$limit);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -93,6 +120,38 @@ class DatabaseService
         }
 
         return $books;
+    }
+
+    public function getBooksInIds(array $bookIds): array
+    {
+        $bookIds = array_values(array_unique(array_map('intval', $bookIds)));
+        $bookIds = array_values(array_filter($bookIds, static fn($id) => $id > 0));
+
+        if (empty($bookIds)) {
+            return [];
+        }
+
+        $idsSql = implode(',', $bookIds);
+        $stmt = $this->db->prepare("SELECT books.*, category.name FROM books
+            INNER JOIN category ON books.category_id = category.category_id
+            WHERE books.book_id IN ($idsSql)
+            AND books.stock_quantity >= 1
+            AND books.is_active = TRUE
+            ORDER BY books.title ASC");
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $books = [];
+
+        while ($row = $result->fetch_assoc()) {
+            if (!empty($row['book_cover'])) {
+                $row['book_cover_base64'] = 'data:image/jpeg;base64,' . base64_encode($row['book_cover']);
+            } else {
+                $row['book_cover_base64'] = './placeholder-image-vertical.png';
+            }
+            $books[] = $row;
+        }
+      return $books;
     }
 
     public function getCategory(int $limit = 12, int $offset = 0): array

@@ -1,25 +1,7 @@
 <?php
     require __DIR__ . '/service.php';
-    $limit = 12;
-    $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-    if ($offset < 0) {
-        $offset = 0;
-    }
+    session_start();
     $service = new DatabaseService();
-    $category = $service->getCategory($limit, $offset);
-    
-    $current_length = count($category);
-    $category_length = $service -> getLengthCategory();
-    $isDisplay_show_more = true;
-
-    $left_length = $category_length % $limit;
-
-    if($current_length == $left_length) {
-        $isDisplay_show_more = false;
-    }else if ($offset == $category_length){
-        $isDisplay_show_more = false;
-    }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,29 +33,25 @@
 
             <ul class="list-container-slide" type="none">
                 <?php 
+                $offset = 0;
+                $limit = 12;
+                $category = $service->getCategory($limit, $offset);
                 foreach ($category as $cat):
                 ?>
-                    <li class="catagory-list">
+                    <li class="catagory-list" onclick="loadBooksByCategory(<?php echo $cat['category_id']; ?>)">
                         <span class="material-symbols-outlined list-icon">keyboard_double_arrow_right</span>
                         <p class="category-text"><?php echo $cat['name']; ?></p>
                     </li>
-                <?php 
+                <?php   
                     endforeach; 
                 ?>
             </ul>
-            <?php
-                if ($isDisplay_show_more) {
-            ?>
-            <div class="view-more-container">
-                <span class="material-symbols-outlined more-icon">more_horiz</span>
-                <?php 
-                    $nextOffset = $offset + $limit;
-                    echo "<a href='?offset=" . $nextOffset . "' class='view-more-content'>View more</a>";
-                ?>
-            </div>
-            <?php 
-                }
-            ?>
+                
+                <div class="view-more-container" onclick="loadCategoryMore()">
+                    <span class="material-symbols-outlined more-icon">more_horiz</span>
+                       <p class='view-more-content'>View more</p>
+                </div>
+                
 
        </aside>
 
@@ -146,7 +124,7 @@
             <div class="book-card-container">
                 <div id="book-cards">
                     <?php
-                        $books = $service->getBooks(50, 0);
+                        $books = $service->getBooks(20, 0);
                         foreach ($books as $book):
                     ?>
                         <div class="book-cards">
@@ -155,10 +133,17 @@
                                 <div>
                                     <h3><?php echo htmlspecialchars($book['title']); ?></h3>
                                     <h4><?php echo htmlspecialchars($book['name']); ?></h4>
+                                    <p>Stock: <?php echo htmlspecialchars($book['stock_quantity']); ?></p>
+                                    <p>Pages: <?php echo htmlspecialchars($book['page_number']); ?></p>
                                 </div>
                                 <div class="price-addtocard">
                                     <h5>$<?php echo htmlspecialchars($book['unit_price']); ?></h5>
-                                    <button>Add To Card</button>
+                                    <div class="unit-container">
+                                        <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, -1, <?php echo (int)$book['stock_quantity']; ?>)">-</button>
+                                        <input type="number" id="qty_display_<?php echo $book['book_id'] ?>" class="qty_display" value="1" min="1" readonly>
+                                        <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, 1, <?php echo (int)$book['stock_quantity']; ?>)">+</button>
+                                    </div>
+                                    <button id="add-to-cart" onclick="addToCart(<?php echo (int)$book['book_id'] ?>, <?php echo (int)$book['stock_quantity']; ?>)">Add To Card</button>
                                 </div>   
                             </div>
                         </div>
@@ -169,6 +154,25 @@
                </button>
             </div>
        </div>
+
+       <div id="cart-backdrop" class="cart-backdrop"></div>
+       <aside id="cart-drawer" class="cart-drawer">
+            <div class="cart-header">
+                <div class="header-aside">
+                    <span class="material-symbols-outlined category-icon">shopping_cart</span>
+                    <h3 class="header-aside-content">Basket</h3>
+                </div>
+                <button type="button" class="cart-close" aria-label="Close basket">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="cart-body">
+            </div>
+            <div class="cart-footer">
+                <p class="total-price"></p>
+                <button type="button" class="checkout-btn">Checkout</button>
+            </div>
+       </aside>
     </div>
 
     <script src="./script.js"></script>

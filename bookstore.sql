@@ -39,3 +39,5 @@ CREATE TABLE SaleDetail(
     FOREIGN KEY (sale_id) REFERENCES Sales(sale_id),
     FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );
+
+UPDATE books SET book_cover = LOAD_FILE('C:/xampp/htdocs/book_shop_ass1_php/book_cover/cb-1.jpg') WHERE book_id = 1;
