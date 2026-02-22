@@ -33,6 +33,35 @@ class DatabaseService
         return $this->db;
     }
 
+    public function getCurrentPrice($book_id){
+        $stmt= $this->db->prepare('SELECT unit_price FROM books WHERE book_id = ? AND is_active = TRUE');
+        $stmt->bind_param('i', $book_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return (float)$row['unit_price'];
+    }
+
+    public function updateStock($book_id, $qty){
+        $stmt = $this->db->prepare('UPDATE books SET stock_quantity = stock_quantity - ? WHERE book_id = ?');
+        $stmt ->bind_param('ii', $qty, $book_id);
+        $stmt -> execute();
+    }
+
+    public function insetSaleDetail($book_id, $sale_id, $qty, $price, $amount): void{
+        $detail_stmt = $this -> db ->prepare("INSERT INTO SaleDetail (book_id, sale_id, qty, unit_price, amount) VALUES (?, ?, ?, ?, ?)");
+        $detail_stmt->bind_param("iiidd", $book_id, $sale_id, $qty, $price, $amount);
+        $detail_stmt->execute();
+    }
+
+    public function insertSale($sale_date, $staff_name, $total_amount): int{
+        $stmt = $this -> db ->prepare("INSERT INTO Sales (sale_date, staff_name, total_amount) VALUES (?, ?, ?)");
+        $stmt->bind_param("ssd", $sale_date, $staff_name, $total_amount);
+        $stmt->execute();
+        $sale_id = $stmt->insert_id ?? 0;
+        return $sale_id;
+    }
+
     public function getBooksByCategoryId(int $categoryId): array{
         $stmt = $this->db->prepare('SELECT books.*, category.name FROM books 
             INNER JOIN category ON books.category_id = category.category_id

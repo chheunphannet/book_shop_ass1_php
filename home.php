@@ -21,10 +21,10 @@
 
     <div class="glass-container">
        <aside class="sidebar">
-            <div class="container-brandlogo">
+            <a class="container-brandlogo" href="/book_shop_ass1_php">
                 <span class="material-symbols-outlined icon-lg">book_2</span>
                 <span class="logo-name">Bookrak</span>
-            </div>
+            </a>
             
             <div class="header-aside">
                 <span class="material-symbols-outlined category-icon">category</span>
@@ -61,10 +61,10 @@
 
        <div class="main-content">
             <nav class="nav-container">
-                <div class="container-brandlogo-main">
+                <a class="container-brandlogo-main" href="/book_shop_ass1_php">
                     <span class="material-symbols-outlined icon-lg">book_2</span>
                     <span class="logo-name">Bookrak</span>
-                </div>
+                </a>
                 <form class="search-container" action="" method="get">
                     <span class="material-symbols-outlined">search</span>
                     <input type="text" name="search" class="search-input">
@@ -78,7 +78,7 @@
                     <li class="basket">
                         <span>Basket</span> 
                         <span class="material-symbols-outlined">shopping_cart</span>
-                        <span class="basket-count">0</span>
+                        <span class="basket-count"></span>
                     </li>
                 </ul>
 
@@ -94,9 +94,14 @@
                             <h1><?php echo $book['title'] ?></h1>
                             <h2><?php echo $book['name'] ?></h2>
                             <div class="price-addtocard">
-                                <h5>$<?php echo $book['unit_price'] ?></h5>
-                                <button>Add To Card</button>
-                            </div>   
+                                <h5>$<?php echo htmlspecialchars($book['unit_price']); ?></h5>
+                                <div class="unit-container">
+                                    <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, -1, <?php echo (int)$book['stock_quantity']; ?>)">-</button>
+                                    <input type="number" id="qty_display_<?php echo $book['book_id'] ?>" class="qty_display" value="1" min="1" readonly>
+                                    <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, 1, <?php echo (int)$book['stock_quantity']; ?>)">+</button>
+                                </div>
+                                <button id="add-to-cart" onclick="addToCart(<?php echo (int)$book['book_id'] ?>, <?php echo (int)$book['stock_quantity']; ?>)">Add To Card</button>
+                            </div>      
                         </div>
                         <div class="book-cover" style="background-image: url('<?php echo $book['book_cover_base64']; ?>');"></div>
                     <?php endif; ?>
@@ -112,7 +117,12 @@
                     <div class="book-cover-card" style="background-image: url('<?php echo $book['book_cover_base64']; ?>')">
                         <div class="book-cover-details">
                             <h5>$<?php echo $book['unit_price'] ?></h5>
-                            <button><a href="">Add To Card</a></button>
+                            <div class="unit-container">
+                                    <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, -1, <?php echo (int)$book['stock_quantity']; ?>)">-</button>
+                                    <input type="number" id="qty_display_<?php echo $book['book_id'] ?>" class="qty_display" value="1" min="1" readonly>
+                                    <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, 1, <?php echo (int)$book['stock_quantity']; ?>)">+</button>
+                            </div>
+                            <button id="add-to-cart" onclick="addToCart(<?php echo (int)$book['book_id'] ?>, <?php echo (int)$book['stock_quantity']; ?>)">Add To Card</button>
                         </div>
                     </div>
                     <?php 
@@ -170,9 +180,18 @@
             </div>
             <div class="cart-footer">
                 <p class="total-price"></p>
-                <button type="button" class="checkout-btn">Checkout</button>
+                <button type="button" class="checkout-btn" onclick="placeOrder()">Checkout</button>
             </div>
        </aside>
+
+       <div id="order-modal" class="order-modal">
+            <div class="order-modal-box">
+                <span id="order-modal-icon" class="material-symbols-outlined order-modal-icon">check_circle</span>
+                <h3 id="order-modal-title">Order successful</h3>
+                <p id="order-modal-message">Your order has been placed successfully.</p>
+                <button type="button" class="order-modal-btn" onclick="closeOrderModal()">OK</button>
+            </div>
+       </div>
     </div>
 
     <script src="./script.js"></script>

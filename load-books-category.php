@@ -23,13 +23,13 @@
                     <p>Pages: <?= htmlspecialchars($book['page_number']) ?></p>
                 </div>
                 <div class="price-addtocard">
-                    <h5>$<?= htmlspecialchars($book['unit_price']) ?></h5>
+                    <h5>$<?php echo htmlspecialchars($book['unit_price']); ?></h5>
                     <div class="unit-container">
-                        <button type="button" onclick="changeQty(<?= (int)$book['book_id'] ?>, -1)">-</button>
-                        <input type="number" id="qty_display_<?= $book['book_id'] ?>" class="qty_display" value="1" min="1" readonly>
-                        <button type="button" onclick="changeQty(<?= (int)$book['book_id'] ?>, 1)">+</button>
+                        <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, -1, <?php echo (int)$book['stock_quantity']; ?>)">-</button>
+                        <input type="number" id="qty_display_<?php echo $book['book_id'] ?>" class="qty_display" value="1" min="1" readonly>
+                        <button type="button" onclick="changeQty(<?php echo (int)$book['book_id']; ?>, 1, <?php echo (int)$book['stock_quantity']; ?>)">+</button>
                     </div>
-                    <button>Add To Card</button>
+                    <button id="add-to-cart" onclick="addToCart(<?php echo (int)$book['book_id'] ?>, <?php echo (int)$book['stock_quantity']; ?>)">Add To Card</button>
                 </div>   
             </div>
         </div>

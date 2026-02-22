@@ -7,6 +7,46 @@ const basketTrigger = document.querySelector(".basket");
 const cartDrawer = document.getElementById("cart-drawer");
 const cartBackdrop = document.getElementById("cart-backdrop");
 const cartClose = document.querySelector(".cart-close");
+const basketCount = document.querySelector(".basket-count");
+const orderModal = document.getElementById("order-modal");
+const orderModalIcon = document.getElementById("order-modal-icon");
+const orderModalTitle = document.getElementById("order-modal-title");
+const orderModalMessage = document.getElementById("order-modal-message");
+// const removeFromCart = document.getElementById("remove-from-cart");
+
+function setTotalPrice(totalText) {
+  const totalEl = document.querySelector(".total-price");
+  if (totalEl) {
+    totalEl.textContent = `Total: $${totalText}`;
+  }
+}
+
+function getTotalPrice() {
+  return fetch(`calculate_price.php`)
+    .then((res) => res.text())
+    .then((text) => {
+      setTotalPrice(text.trim());
+    });
+}
+
+getTotalPrice();
+
+function removeFromCart(book_id) {
+  fetch(`remove-from-cart.php?book_id=${book_id}`)
+    .then(() => fetch(`dispay-item-in-cart.php`))
+    .then((res) => res.text())
+    .then((html) => {
+      const cart_body = document.querySelector(".cart-body");
+      if (html.trim() === "no_item") {
+        cart_body.innerHTML = "<p class='cart-empty'>Your basket is empty.</p>";
+        setTotalPrice("0.00");
+      } else {
+        cart_body.innerHTML = html;
+        getTotalPrice();
+      }
+      return getCountItemInBasket();
+    });
+}
 
 fetch(`dispay-item-in-cart.php`)
   .then((res) => res.text())
@@ -14,13 +54,21 @@ fetch(`dispay-item-in-cart.php`)
     const cart_body = document.querySelector(".cart-body");
     if (html.trim() === "no_item") {
       cart_body.innerHTML = "<p class='cart-empty'>Your basket is empty.</p>";
+      setTotalPrice("0.00");
     } else {
       cart_body.innerHTML = html;
-      const totalEl = cart_body.querySelector("[data-cart-total]");
-      const total = totalEl.dataset.cartTotal;
-      document.querySelector(".total-price").textContent = `Total: $${total}`;
+      getTotalPrice();
     }
   });
+
+function getCountItemInBasket() {
+  return fetch(`basket-count.php`)
+    .then((res) => res.text())
+    .then((html) => {
+      basketCount.innerText = html;
+    });
+}
+getCountItemInBasket();
 
 sidebarToggle.addEventListener("click", () => {
   sidebar.classList.toggle("collapsed");
@@ -160,28 +208,68 @@ function addToCart(book_id, real_qty) {
   const display = document.getElementById(`qty_display_${book_id}`);
   const qty = parseInt(display.value);
 
-  fetch(
-    `add-to-cart.php?book_id=${book_id}&qty=${qty}&real_qty=${real_qty}`,
-  ).then((response) => {
-    if (response.ok) {
-      alert("Added to cart!");
-      display.value = 1;
-    }
-  });
-
-  fetch(`dispay-item-in-cart.php`)
+  fetch(`add-to-cart.php?book_id=${book_id}&qty=${qty}&real_qty=${real_qty}`)
+    .then((response) => {
+      if (response.ok) {
+        display.value = 1;
+      }
+      return fetch(`dispay-item-in-cart.php`);
+    })
     .then((res) => res.text())
     .then((html) => {
       const cart_body = document.querySelector(".cart-body");
       if (html.trim() === "no_item") {
         cart_body.innerHTML = "<p class='cart-empty'>Your basket is empty.</p>";
+        setTotalPrice("0.00");
       } else {
         cart_body.innerHTML = html;
-        const totalEl = cart_body.querySelector("[data-cart-total]");
-        const total = totalEl ? totalEl.dataset.cartTotal : "0.00";
-        document.querySelector(".total-price").textContent = `$${total}`;
+        getTotalPrice();
+      }
+      return getCountItemInBasket();
+    });
+
+  setCartOpen(true);
+}
+
+function placeOrder() {
+  fetch("check-out.php")
+    .then((res) => res.text())
+    .then((msg) => {
+      if (msg.trim() === "Order_success") {
+        const cartBody = document.querySelector(".cart-body");
+        cartBody.innerHTML = "<p class='cart-empty'>Your basket is empty.</p>";
+        setTotalPrice("0.00");
+        basketCount.innerText = "0";
+        showOrderModal("success");
+      } else {
+        showOrderModal("fail");
       }
     });
+}
+
+function showOrderModal(type) {
+  if (!orderModal) {
+    return;
+  }
+  orderModal.classList.remove("success", "fail");
+  orderModal.classList.add(type, "open");
+
+  if (type === "success") {
+    orderModalIcon.textContent = "check_circle";
+    orderModalTitle.textContent = "Order Successful";
+    orderModalMessage.textContent = "Your order has been placed.";
+  } else {
+    orderModalIcon.textContent = "error";
+    orderModalTitle.textContent = "Order Failed";
+    orderModalMessage.textContent = "Your cart is empty or checkout failed.";
+  }
+}
+
+function closeOrderModal() {
+  if (!orderModal) {
+    return;
+  }
+  orderModal.classList.remove("open", "success", "fail");
 }
 
 function setDisplay(display) {
