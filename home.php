@@ -74,7 +74,7 @@
                 </form>
                     
                 <ul class="list-container-main" type="none">
-                    <li>Admin Dashboard</li>
+                    <li><a href="/book_shop_ass1_php/admin/admin.php">Admin Dashboard</a></li>
                     <li class="basket">
                         <span>Basket</span> 
                         <span class="material-symbols-outlined">shopping_cart</span>

@@ -171,7 +171,7 @@ function loadCategoryMore() {
     .then((html) => {
       if (html.trim() != "no_more") {
         document.querySelector(".list-container-slide").innerHTML = html;
-
+        
         const newUrl =
           window.location.pathname + `?limit=${c_limit}&offset=${c_offset}`;
         history.pushState({ offset: c_offset }, "", newUrl);
