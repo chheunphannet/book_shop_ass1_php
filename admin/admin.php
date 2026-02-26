@@ -220,11 +220,15 @@ $stats = [
                                                 <?php echo htmlspecialchars($book['name']); ?>
                                             </span>
                                             <select class="dropdown-cat input-container input-container-<?php echo htmlspecialchars($book['book_id']); ?>" name="category" id="edit-input-<?php echo htmlspecialchars($book['book_id'])?>">
-                                                    <?php
-                                                        foreach($category as $cat):?>
-                                                            <option value="<?php echo $book['name']; ?>"><?php echo $book['name']; ?></option>
-                                                            <option value="<?php echo $cat['name']; ?>"><?php echo $cat['name']; ?></option>
-                                                    <?php endforeach ?>
+                                                    <?php if (empty($category)): ?>
+                                                        <option value="">No category available</option>
+                                                    <?php else: ?>
+                                                        <?php foreach ($category as $cat): ?>
+                                                            <option value="<?php echo htmlspecialchars($cat['name']); ?>" <?php echo $cat['name'] === $book['name'] ? 'selected' : ''; ?>>
+                                                                <?php echo htmlspecialchars($cat['name']); ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
                                             </select>
                                         </td>
                                         <td>

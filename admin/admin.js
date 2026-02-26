@@ -60,12 +60,14 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
-function getCategoryOptionsHtml() {
-  const options = [];
+function getAvailableCategoryNames() {
+  const names = [];
   const seen = new Set();
 
-  document.querySelectorAll('#inventoryTbody select[name="category"] option').forEach((opt) => {
-    const value = (opt.value || "").trim();
+  document.querySelectorAll("#categoryTbody tr").forEach((row) => {
+    const displayEl = row.querySelector('[class*="category-display-value-"]');
+    const value = (displayEl?.textContent || "").trim();
+
     if (!value) {
       return;
     }
@@ -73,20 +75,57 @@ function getCategoryOptionsHtml() {
     const key = value.toLowerCase();
     if (!seen.has(key)) {
       seen.add(key);
-      options.push(value);
+      names.push(value);
     }
   });
 
+  if (names.length > 0) {
+    return names;
+  }
+
+  document
+    .querySelectorAll('#inventoryTbody select[name="category"] option')
+    .forEach((opt) => {
+      const value = (opt.value || "").trim();
+      if (!value) {
+        return;
+      }
+
+      const key = value.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        names.push(value);
+      }
+    });
+
+  return names;
+}
+
+function getCategoryOptionsHtml(selectedValue = "") {
+  const options = getAvailableCategoryNames();
+  const selectedKey = String(selectedValue || "").trim().toLowerCase();
+
   if (options.length === 0) {
-    return '<option value="">Select category</option>';
+    return '<option value="">No category available</option>';
   }
 
   return options
     .map((value) => {
       const safeValue = escapeHtml(value);
-      return `<option value="${safeValue}">${safeValue}</option>`;
+      const isSelected =
+        selectedKey !== "" && value.toLowerCase() === selectedKey
+          ? " selected"
+          : "";
+      return `<option value="${safeValue}"${isSelected}>${safeValue}</option>`;
     })
     .join("");
+}
+
+function refreshInventoryCategoryDropdowns() {
+  document.querySelectorAll('#inventoryTbody select[name="category"]').forEach((selectEl) => {
+    const selectedValue = selectEl.value || "";
+    selectEl.innerHTML = getCategoryOptionsHtml(selectedValue);
+  });
 }
 
 function createNewBookRow(book_id) {
@@ -577,6 +616,7 @@ function onCategoryConfirm(category_id) {
       }
 
       applyCategoryRowUiUpdate(category_id, data);
+      refreshInventoryCategoryDropdowns();
       onCategoryCancel(category_id);
       applyCategoryNameFilter();
     })
@@ -618,6 +658,7 @@ function onCategoryDeleteClick(category_id) {
         insertedCategoryIdByTempId.delete(String(category_id));
       }
       row.remove();
+      refreshInventoryCategoryDropdowns();
     })
     .catch((err) => {
       alert(err.message || "Delete failed.");
@@ -644,3 +685,5 @@ const categorySearchInput = document.getElementById("categorySearch");
 if (categorySearchInput) {
   categorySearchInput.addEventListener("input", applyCategoryNameFilter);
 }
+
+refreshInventoryCategoryDropdowns();
